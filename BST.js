@@ -1,3 +1,15 @@
+//test tree
+const prettyPrint = (node, prefix = '', isLeft = true) => {
+  if (node === null || node === undefined) {
+    return;
+  }
+
+  prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+  console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+  prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+}
+
+
 class BstNode{
     constructor(data){
 
@@ -29,6 +41,20 @@ class Tree{
         rootNode.right = this.#buildTree(arr.slice(mid+1, arr.length));
         return rootNode;
     }
+
+    includes(value){
+        let queue = [];
+        let curr = this.root;
+        queue.push(curr);
+        while(queue.length !== 0){
+            if(queue.at(0).data === value) return true;
+            if(curr.left !== null) queue.push(curr.left);
+            if(curr.right !== null) queue.push(curr.right);
+            queue.shift();
+            curr = queue.at(0);
+        }
+        return false;
+    }
     
     constructor(arr){
         arr = this.#renewArr(arr);
@@ -36,5 +62,6 @@ class Tree{
     }
 }
 
-let item = new Tree([2, 5, 1, 6, 8]);
-console.log(item.root);
+
+let item = new Tree([2, 5, 1, 6, 7, 4, 3]);
+console.log(item.includes(3));
