@@ -66,7 +66,41 @@ class Tree{
         }
         if(value < curr.data) curr.left = new BstNode(value);
         else curr.right = new BstNode(value);
+    }
 
+    deleteItem(value){
+        if(!this.includes(value)) return;
+        if(this.root.data === value) this.root = null;
+
+        let fast = this.root;
+        let slow = this.root;
+
+        if(value < fast.data){
+            fast = fast.left;
+        }
+        else fast = fast.right;
+
+        while(fast !== null && slow !== null){
+            if(value < fast.data){
+                slow = fast;
+                fast = fast.left;
+            }
+            else if(value > fast.data){
+                slow = fast;
+                fast = fast.right;
+            }
+            else{
+                if(value < slow.data){
+                    slow.left = null;
+                    slow = slow.left;
+
+                }
+                else{
+                     slow.right = null;
+                     slow = slow.right;
+                }
+            }
+        }
     }
     
     constructor(arr){
@@ -76,6 +110,7 @@ class Tree{
 }
 
 
-let item = new Tree([1, 6, 5, 2, 8]);
-item.insert(12);
-console.log(item);
+let item = new Tree([50, 30, 70, 20, 40, 60, 80]);
+prettyPrint(item.root);
+item.deleteItem(30);
+prettyPrint(item.root);
