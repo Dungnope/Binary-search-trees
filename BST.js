@@ -55,6 +55,19 @@ class Tree{
         }
         return false;
     }
+
+    insert(value){
+        if(this.includes(value)) return;
+        
+        let curr = this.root;
+        while(curr.left !== null || curr.right !== null){
+            if(value < curr.data) curr = curr.left;
+            else curr = curr.right;
+        }
+        if(value < curr.data) curr.left = new BstNode(value);
+        else curr.right = new BstNode(value);
+
+    }
     
     constructor(arr){
         arr = this.#renewArr(arr);
@@ -63,5 +76,6 @@ class Tree{
 }
 
 
-let item = new Tree([2, 5, 1, 6, 7, 4, 3]);
-console.log(item.includes(3));
+let item = new Tree([1, 6, 5, 2, 8]);
+item.insert(12);
+console.log(item);
