@@ -22,7 +22,7 @@ class BstNode{
 class Tree{
 
     #renewArr(arr){
-        const removeDuplicate = new Set(arr.toSorted());
+        const removeDuplicate = new Set(arr);
         let newArr = [];
         removeDuplicate.forEach(item => {
             newArr.push(item);
@@ -70,17 +70,40 @@ class Tree{
 
     deleteItem(value){
         if(!this.includes(value)) return;
-        if(this.root.data === value) this.root = null;
 
         let fast = this.root;
         let slow = this.root;
 
+        //check if value is root element
+
+        const inorderSuccessor = (curr) => {
+            curr = curr.left;
+            while(curr != null && curr.right != null){
+                curr = curr.right;
+            }
+            return curr;
+        }
+
         if(value < fast.data){
             fast = fast.left;
         }
-        else fast = fast.right;
+        else if(value > fast.data) fast = fast.right;
+        else{
+            //this is root value so use the largestRight node is the highest node of subleft
+            let curr = this.root;
+            let largestRight = inorderSuccessor(curr);
+            fast.data = largestRight.data;
+            if(fast.right.left !== null) fast = fast.left;
+
+            if(fast.right.right !== null){
+                fast = fast.right;
+            }
+            fast.right = null;
+        }
+        
 
         while(fast !== null && slow !== null){
+
             if(value < fast.data){
                 slow = fast;
                 fast = fast.left;
@@ -89,27 +112,57 @@ class Tree{
                 slow = fast;
                 fast = fast.right;
             }
+
             //if found the value
             else{
-                if(value < slow.data){
-                    if(fast.right === null && fast.left === null){
-                        slow.left = null;
-                        slow = slow.left;
-                    }
-                    else{
-                        if(fast.right !== null) {slow.left = fast.right; fast = fast.right}
-                        else if(fast.left !== null) {slow.left = fast.left; fast = fast.left}
-                    }
+
+                //the leaf node
+                if(fast.left === null && fast.right === null){
+                    if(slow.data > value) slow.left = null;
+                    else slow.right = null;
+                    fast = fast.right;
+                    break;
                 }
-                else{
-                    if(fast.right === null && fast.left === null){
-                        slow.right = null;
-                        slow = slow.right;
+
+                //if have 1 child
+                    //left side
+                if((fast.left !== null && fast.right === null) && value < slow.data){
+                    slow.left = fast.left;
+                    fast = null;
+                    break;
+                }
+                else if((fast.left !== null && fast.right === null) && value > slow.data){
+                    slow.right = fast.left;
+                    fast = null;
+                    break;
+                }
+                    //right side
+                else if((fast.left === null && fast.right !== null) && value < slow.data){
+                    slow.left = fast.right;
+                    fast = null;
+                    break;
+                }
+                else if((fast.left === null && fast.right !== null) && value > slow.data){
+                    slow.right = fast.right;
+                    fast = null;
+                    break;
+                }
+
+                //if have 2 children
+                if(fast.left !== null && fast.right !== null){
+    
+                    let largestleft = inorderSuccessor(fast);
+                    fast.data = largestleft.data;
+                    
+                    //case the child have only one childe
+                    if(fast.left.left !== null){
+                        fast = fast.left;
+                    }else {fast.left = null; continue;}
+                    
+                    if(fast.right !== null){
+                        fast = fast.right;
                     }
-                    else{
-                        if(fast.right !== null) {slow.left = fast.right; fast = fast.right}
-                        else if(fast.left !== null) {slow.left = fast.left; fast = fast.left}
-                    }
+                    
                 }
             }
         }
@@ -121,8 +174,9 @@ class Tree{
     }
 }
 
-
-let item = new Tree([50, 30, 70, 20, 60, 80]);
+let arr = [30, 1, 84, 9, 8, 80, 83].sort((a, b) => a - b);
+let item = new Tree(arr);
 prettyPrint(item.root);
-item.deleteItem(20);
+item.deleteItem(84);
+item.deleteItem(70);
 prettyPrint(item.root);
