@@ -89,15 +89,27 @@ class Tree{
                 slow = fast;
                 fast = fast.right;
             }
+            //if found the value
             else{
                 if(value < slow.data){
-                    slow.left = null;
-                    slow = slow.left;
-
+                    if(fast.right === null && fast.left === null){
+                        slow.left = null;
+                        slow = slow.left;
+                    }
+                    else{
+                        if(fast.right !== null) {slow.left = fast.right; fast = fast.right}
+                        else if(fast.left !== null) {slow.left = fast.left; fast = fast.left}
+                    }
                 }
                 else{
-                     slow.right = null;
-                     slow = slow.right;
+                    if(fast.right === null && fast.left === null){
+                        slow.right = null;
+                        slow = slow.right;
+                    }
+                    else{
+                        if(fast.right !== null) {slow.left = fast.right; fast = fast.right}
+                        else if(fast.left !== null) {slow.left = fast.left; fast = fast.left}
+                    }
                 }
             }
         }
@@ -110,7 +122,7 @@ class Tree{
 }
 
 
-let item = new Tree([50, 30, 70, 20, 40, 60, 80]);
+let item = new Tree([50, 30, 70, 20, 60, 80]);
 prettyPrint(item.root);
-item.deleteItem(30);
+item.deleteItem(20);
 prettyPrint(item.root);
