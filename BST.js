@@ -71,6 +71,7 @@ class Tree{
     //iterative delete item
     deleteItem(value){
         if(!this.includes(value)) return;
+        if(this.root.data === null || this.root === null) return;
         let curr = this.root; //curr node track
         let prev = null; //prev node track
 
