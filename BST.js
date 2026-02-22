@@ -60,7 +60,7 @@ class Tree{
         if(this.includes(value)) return;
         
         let curr = this.root;
-        while(curr.left !== null || curr.right !== null){
+        while(curr.left !== null && curr.right !== null){
             if(value < curr.data) curr = curr.left;
             else curr = curr.right;
         }
@@ -70,99 +70,76 @@ class Tree{
 
     deleteItem(value){
         if(!this.includes(value)) return;
+        let curr = this.root; //curr node track
+        let prev = null; //prev node track
 
-        let fast = this.root;
-        let slow = this.root;
-
-        //check if value is root element
-
-        const inorderSuccessor = (curr) => {
-            curr = curr.left;
-            while(curr != null && curr.right != null){
+        while(curr.left !== null && curr.right !== null){
+            if(value < curr.data)
+            {
+                prev = curr;
+                curr = curr.left;
+            }
+            else if(value > curr.data)
+            { 
+                prev = curr;
                 curr = curr.right;
             }
-            return curr;
-        }
-
-        if(value < fast.data){
-            fast = fast.left;
-        }
-        else if(value > fast.data) fast = fast.right;
-        else{
-            //this is root value so use the largestRight node is the highest node of subleft
-            let curr = this.root;
-            let largestRight = inorderSuccessor(curr);
-            fast.data = largestRight.data;
-            if(fast.right.left !== null) fast = fast.left;
-
-            if(fast.right.right !== null){
-                fast = fast.right;
-            }
-            fast.right = null;
-        }
-        
-
-        while(fast !== null && slow !== null){
-
-            if(value < fast.data){
-                slow = fast;
-                fast = fast.left;
-            }
-            else if(value > fast.data){
-                slow = fast;
-                fast = fast.right;
-            }
-
-            //if found the value
+            //if founding the value
             else{
-
-                //the leaf node
-                if(fast.left === null && fast.right === null){
-                    if(slow.data > value) slow.left = null;
-                    else slow.right = null;
-                    fast = fast.right;
+                //no leaf child
+                if(curr.left === null && curr.right === null){
+                    curr = null;
                     break;
                 }
-
-                //if have 1 child
-                    //left side
-                if((fast.left !== null && fast.right === null) && value < slow.data){
-                    slow.left = fast.left;
-                    fast = null;
-                    break;
-                }
-                else if((fast.left !== null && fast.right === null) && value > slow.data){
-                    slow.right = fast.left;
-                    fast = null;
-                    break;
-                }
-                    //right side
-                else if((fast.left === null && fast.right !== null) && value < slow.data){
-                    slow.left = fast.right;
-                    fast = null;
-                    break;
-                }
-                else if((fast.left === null && fast.right !== null) && value > slow.data){
-                    slow.right = fast.right;
-                    fast = null;
-                    break;
-                }
-
-                //if have 2 children
-                if(fast.left !== null && fast.right !== null){
-    
-                    let largestleft = inorderSuccessor(fast);
-                    fast.data = largestleft.data;
-                    
-                    //case the child have only one childe
-                    if(fast.left.left !== null){
-                        fast = fast.left;
-                    }else {fast.left = null; continue;}
-                    
-                    if(fast.right !== null){
-                        fast = fast.right;
+                //if have one child
+                    //if the node on the right side
+                else if(curr.left === null){
+                    if(prev.data > curr.data){
+                        prev.left = curr.right;
+                        curr = null;
                     }
-                    
+                    else{
+                        prev.right = curr.right;
+                        curr = null;
+                    }
+                }
+                    //if the node on the left side
+                else if(curr.right === null){
+                    if(prev.data > curr.data){
+                        prev.left = curr.left;
+                        curr = null;
+                    }
+                    else{
+                        prev.right = curr.left;
+                        curr = null;
+                    }
+                }
+                //if have two children
+                else if(curr.left !== null && curr.right !== null){
+
+                    prev = curr; // keep delete position
+
+                    // take the max right value of the left subtree means min right value
+                    curr = curr.left;
+                    let next = curr;
+
+                    // now the next is the right child of curr if the curr still have child
+                    while(next.right !== null){
+                        curr = next;
+                        next = next.right;
+                    }
+
+                    let ans = next.data;
+                    prev.data = ans;
+
+                    //check whether the prev gright randchild is null or not
+                    if(prev.left.right === null){
+                        prev.left = null;
+                        break;
+                    }
+                    curr.right = null;
+                    next = null;
+                    break;
                 }
             }
         }
@@ -174,9 +151,14 @@ class Tree{
     }
 }
 
-let arr = [30, 1, 84, 9, 8, 80, 83].sort((a, b) => a - b);
+let arr = [5, 10, 15, 20, 25, 30, 35, 45, 60, 55].sort((a, b) => a - b);
 let item = new Tree(arr);
 prettyPrint(item.root);
-item.deleteItem(84);
-item.deleteItem(70);
+item.insert(26);
+item.insert(24);
+item.insert(27);
+console.log("\n");
+prettyPrint(item.root);
+item.deleteItem(30);
+console.log("\n");
 prettyPrint(item.root);
