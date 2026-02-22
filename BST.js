@@ -68,6 +68,7 @@ class Tree{
         else curr.right = new BstNode(value);
     }
 
+    //iterative delete item
     deleteItem(value){
         if(!this.includes(value)) return;
         let curr = this.root; //curr node track
@@ -137,6 +138,7 @@ class Tree{
                         prev.left = null;
                         break;
                     }
+                    //else remove the min right node
                     curr.right = null;
                     next = null;
                     break;
