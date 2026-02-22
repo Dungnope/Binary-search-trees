@@ -84,3 +84,59 @@ bigTree.deleteItem(120);
 bigTree.deleteItem(100);
 prettyPrint(bigTree.root);
 // Phá hủy hàng loạt các node ngã ba để xem logic nối dây (bypass) của bạn có bị rò rỉ bộ nhớ hay mất node nào không.
+
+console.log("\n==================================================");
+console.log("    PHẦN 3: CÁC EDGE CASES ẨN (HIDDEN BUGS)       ");
+console.log("==================================================");
+
+// ---------------------------------------------------------
+// [TEST 10] Cây chỉ có 1 Node duy nhất và xóa chính nó
+// ---------------------------------------------------------
+console.log("\n[TEST 10] Xóa Node duy nhất của cây - Xóa 50");
+let tree10 = new Tree([50]);
+console.log("Cây ban đầu:");
+prettyPrint(tree10.root);
+tree10.deleteItem(50);
+console.log("Sau khi xóa 50:");
+prettyPrint(tree10.root); 
+// Kỳ vọng: Hàm không bị crash (không báo lỗi Cannot read properties of null). 
+// Kết quả in ra trống trơn (hoặc undefined) vì this.root đã trở thành null.
+
+
+// ---------------------------------------------------------
+// [TEST 11] Successor KHÔNG PHẢI là Node lá (Nó có con phải)
+// ---------------------------------------------------------
+console.log("\n[TEST 11] Successor có nhánh con bên phải - Xóa 50");
+let tree11 = new Tree([50]); 
+// Dựng cây thủ công để ép ra đúng trường hợp này
+tree11.root.left = new BstNode(20);
+tree11.root.right = new BstNode(80);
+tree11.root.right.left = new BstNode(60); // 60 là Successor của 50
+tree11.root.right.left.right = new BstNode(65); // Nhưng 60 lại có con phải là 65
+tree11.root.right.right = new BstNode(90);
+
+console.log("Cây ban đầu:");
+prettyPrint(tree11.root);
+tree11.deleteItem(50);
+console.log("Sau khi xóa Root 50:");
+prettyPrint(tree11.root);
+// Kỳ vọng: Root mới là 60. 
+// QUAN TRỌNG NHẤT: Node 65 không bị mất, mà nó phải được nối lên làm con trái của 80.
+// Hình dáng nhánh phải sẽ là: 80 -> left: 65, right: 90.
+
+
+
+// ---------------------------------------------------------
+// [TEST 12] Cây lệch: Xóa Root và Successor là con trực tiếp
+// ---------------------------------------------------------
+console.log("\n[TEST 12] Cây lệch (Xóa Root, Successor là con phải trực tiếp) - Xóa 50");
+// Mảng [20, 50, 80, 90] qua hàm buildTree của bạn sẽ tạo ra cây lệch:
+// Root 50, Trái 20, Phải 80. Phải của 80 là 90.
+let tree12 = new Tree([20, 50, 80, 90]);
+console.log("Cây ban đầu:");
+prettyPrint(tree12.root);
+tree12.deleteItem(50);
+console.log("Sau khi xóa Root 50:");
+prettyPrint(tree12.root);
+// Kỳ vọng: Root mới là 80. 
+// Nhánh trái của 80 nối thẳng về 20. Nhánh phải của 80 vẫn giữ nguyên là 90.
