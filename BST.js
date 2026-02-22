@@ -60,9 +60,10 @@ class Tree{
         if(this.includes(value)) return;
         
         let curr = this.root;
-        while(curr.left !== null && curr.right !== null){
-            if(value < curr.data) curr = curr.left;
-            else curr = curr.right;
+        while(curr!== null){
+            if(value < curr.data && curr.left !== null) curr = curr.left;
+            else if(value > curr.data && curr.right !== null)curr = curr.right;
+            else break;
         }
         if(value < curr.data) curr.left = new BstNode(value);
         else curr.right = new BstNode(value);
@@ -91,6 +92,10 @@ class Tree{
                 prev = curr;
                 curr = curr.right;
             }
+
+            //check if have 2 nodes
+            if(prev === null) {this.root = curr.right; return;}
+
             //if founding the value
             else{
                 //no leaf child
@@ -205,7 +210,11 @@ class Tree{
 
 
 
-
+ console.log("=== TEST CASE 1: Xóa trong cây rỗng và Node không tồn tại ===");
+ let tree1 = new Tree([50, 80]);
+ tree1.insert(90); // Cây rỗng, hàm phải thoát an toàn
+ prettyPrint(tree1.root);
+ console.log("Pass Test 1 (Không bị crash) \n")
 
 
 
