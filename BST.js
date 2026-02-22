@@ -71,11 +71,11 @@ class Tree{
     //iterative delete item
     deleteItem(value){
         if(!this.includes(value)) return;
-        if(this.root.data === null || this.root === null) return;
+        if(this.root === null) return;
         let curr = this.root; //curr node track
         let prev = null; //prev node track
 
-        while(curr.left !== null && curr.right !== null){
+        while(curr !== null){
             if(value < curr.data)
             {
                 prev = curr;
@@ -90,6 +90,9 @@ class Tree{
             else{
                 //no leaf child
                 if(curr.left === null && curr.right === null){
+                    //check to delete child of parent node
+                    if(prev.left !== null && prev.left.data === curr.data) prev.left = null;
+                    else if(prev.right !== null && prev.right.data === curr.data) prev.right = null;
                     curr = null;
                     break;
                 }
@@ -121,27 +124,31 @@ class Tree{
 
                     prev = curr; // keep delete position
 
-                    // take the max right value of the left subtree means min right value
-                    curr = curr.left;
+                    // take the min right value of the right subtree means min left value
+                    curr = curr.right;
                     let next = curr;
 
-                    // now the next is the right child of curr if the curr still have child
-                    while(next.right !== null){
+                    while(next.left !== null){
                         curr = next;
-                        next = next.right;
+                        next = next.left;
                     }
 
-                    let ans = next.data;
-                    prev.data = ans;
+                    //change data of root
+                    prev.data = next.data;
 
-                    //check whether the prev gright randchild is null or not
-                    if(prev.left.right === null){
-                        prev.left = null;
-                        break;
+                    //case the smallest 
+                    if(prev.left !== null && prev.left.data === next.data)
+                    { 
+                        prev.left = curr.left;
                     }
-                    //else remove the min right node
-                    curr.right = null;
-                    next = null;
+                    else if(prev.right !== null && prev.right.data === next.data) 
+                    {
+                        prev.right = curr.right;
+                    }
+
+                    if(curr.left !== null && curr.left.data === next.data) curr.left = null;
+                    else if(curr.right !== null && curr.right.data === next.data) curr.right = null;
+
                     break;
                 }
             }
@@ -149,19 +156,15 @@ class Tree{
     }
     
     constructor(arr){
-        arr = this.#renewArr(arr);
-        this.root = this.#buildTree(arr);
+        arr = this.#renewArr(arr); //delete duplicate item
+        arr = arr.sort((a, b) => a - b); // sort arr smallest to largest
+        this.root = null;
+        if(arr.length === 0) 
+        {
+            this.root =  new BstNode(null);
+        }
+        else this.root = this.#buildTree(arr);
     }
 }
 
-let arr = [5, 10, 15, 20, 25, 30, 35, 45, 60, 55].sort((a, b) => a - b);
-let item = new Tree(arr);
-prettyPrint(item.root);
-item.insert(26);
-item.insert(24);
-item.insert(27);
-console.log("\n");
-prettyPrint(item.root);
-item.deleteItem(30);
-console.log("\n");
-prettyPrint(item.root);
+export  {prettyPrint, Tree, BstNode};
