@@ -195,6 +195,8 @@ class Tree{
             }
         }
     }
+
+    
     
     constructor(arr){
         arr = this.#renewArr(arr); //delete duplicate item
