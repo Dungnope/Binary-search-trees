@@ -212,10 +212,15 @@ class Tree{
         queue.push(curr);
         while(queue.length !== 0){
             try{
-                callback(queue.at(0).data, this.root);
+                if(typeof(callback) !== 'function'){
+                    throw new Error("Require a callback as parameter");
+                }
+                else{
+                    callback(queue.at(0).data, this.root);
+                }
             }catch(error)
             {
-                console.log(error.message);
+                console.log(error);
                 break;
             }
             if(curr.left !== null) queue.push(curr.left);
@@ -238,5 +243,11 @@ class Tree{
     }
 }
 
+// let test = new Tree([2, 12, 15, 45, 66, 29]);
+
+// test.levelOrderForEach((item) => {
+//     console.log(item);
+// });
+// prettyPrint(test.root);
 
 export {BstNode, Tree, prettyPrint}
