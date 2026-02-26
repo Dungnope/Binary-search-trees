@@ -211,11 +211,18 @@ class Tree{
         let curr = this.root;
         queue.push(curr);
         while(queue.length !== 0){
-            callback(queue.at(0).data, this.root);
+            try{
+                callback(queue.at(0).data, this.root);
+            }catch(error)
+            {
+                console.log(error.message);
+                break;
+            }
             if(curr.left !== null) queue.push(curr.left);
             if(curr.right !== null) queue.push(curr.right);
             queue.shift();
             curr = queue.at(0);
+
         }
     }
     
@@ -230,7 +237,6 @@ class Tree{
         else this.root = this.#buildTree(arr);
     }
 }
-
 
 
 export {BstNode, Tree, prettyPrint}
