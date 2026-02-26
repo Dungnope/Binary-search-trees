@@ -9,10 +9,8 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
   prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
 }
 
-
 class BstNode{
     constructor(data){
-
         this.data = data === undefined ? 0 : data;
         this.left = null;
         this.right = null;
@@ -74,12 +72,12 @@ class Tree{
         if(!this.includes(value)) return;
         if(this.root === null) return;
         if(this.root.left === null && this.root.right === null){
-            this.root.data = undefined;
+            this.root.data = null;
             return;
         }
 
         let curr = this.root; //curr node track
-        let prev = null; //prev node track
+        let prev = curr; //prev node track
 
         while(curr !== null){
             if(value < curr.data)
@@ -94,7 +92,7 @@ class Tree{
             }
 
             //check if have 2 nodes
-            if(prev === null) {this.root = curr.right; return;}
+            // if(prev === null) {this.root = curr.right; return;}
 
             //if founding the value
             else{
@@ -113,8 +111,14 @@ class Tree{
                         prev.left = curr.right;
                         curr = null;
                     }
-                    else{
+                    else if(prev.data < curr.data){
                         prev.right = curr.right;
+                        curr = null;
+                    }
+                    //if curr and prev have point to same node
+                    else{
+                        curr.data = prev.right.data;
+                        curr.right = null;
                         curr = null;
                     }
                 }
@@ -124,8 +128,14 @@ class Tree{
                         prev.left = curr.left;
                         curr = null;
                     }
-                    else{
+                    else if(prev.data < curr.data){
                         prev.right = curr.left;
+                        curr = null;
+                    }
+                    //if curr and prev have point to same node
+                    else{
+                        curr.data = prev.left.data;
+                        curr.left = null;
                         curr = null;
                     }
                 }
@@ -196,7 +206,18 @@ class Tree{
         }
     }
 
-    
+    levelOrderForEach(callback){
+        let queue = [];
+        let curr = this.root;
+        queue.push(curr);
+        while(queue.length !== 0){
+            callback(queue.at(0).data, this.root);
+            if(curr.left !== null) queue.push(curr.left);
+            if(curr.right !== null) queue.push(curr.right);
+            queue.shift();
+            curr = queue.at(0);
+        }
+    }
     
     constructor(arr){
         arr = this.#renewArr(arr); //delete duplicate item
@@ -212,12 +233,4 @@ class Tree{
 
 
 
- console.log("=== TEST CASE 1: Xóa trong cây rỗng và Node không tồn tại ===");
- let tree1 = new Tree([50, 80]);
- tree1.insert(90); // Cây rỗng, hàm phải thoát an toàn
- prettyPrint(tree1.root);
- console.log("Pass Test 1 (Không bị crash) \n")
-
-
-
-export  {prettyPrint, Tree, BstNode};
+export {BstNode, Tree, prettyPrint}
