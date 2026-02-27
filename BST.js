@@ -207,6 +207,7 @@ class Tree{
     }
 
     levelOrderForEach(callback){
+        //iterative
         let queue = [];
         let curr = this.root;
         queue.push(curr);
@@ -227,8 +228,45 @@ class Tree{
             if(curr.right !== null) queue.push(curr.right);
             queue.shift();
             curr = queue.at(0);
-
         }
+
+        //recursive
+
+    }
+
+    levelOrderForEachRecursive(callback){
+        //recursive
+        let item = this.root;
+        function callself(item, queue = [], arr = [], root){
+            if(item === null){
+                return;
+            }
+
+            arr.push(item.data);
+            if(item.left !== null) queue.push(item.left);
+            if(item.right !== null) queue.push(item.right);
+
+            try{
+                if(typeof(callback) !== 'function'){
+                    throw new Error("Require a callback as parameter");
+                }
+                else{
+                    callback(item.data, root);
+                }
+            }catch(error)
+            {
+                console.log(error);
+                return;
+            }
+            let next;
+
+            if(queue.length > 0) next = queue[0];
+            else next = null;
+
+            queue.shift();
+            callself(next, queue, arr, root);
+        }
+        callself(item, [], [], item);
     }
     
     constructor(arr){
@@ -243,11 +281,13 @@ class Tree{
     }
 }
 
-// let test = new Tree([2, 12, 15, 45, 66, 29]);
+let test = new Tree([2, 12, 15, 45, 66, 29]);
 
-// test.levelOrderForEach((item) => {
-//     console.log(item);
-// });
 // prettyPrint(test.root);
+
+test.levelOrderForEachRecursive((item, root) => {
+    console.log(item);
+});
+
 
 export {BstNode, Tree, prettyPrint}
