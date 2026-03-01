@@ -222,7 +222,7 @@ class Tree{
             }catch(error)
             {
                 console.log(error);
-                break;
+                return;
             }
             if(curr.left !== null) queue.push(curr.left);
             if(curr.right !== null) queue.push(curr.right);
@@ -237,7 +237,7 @@ class Tree{
     levelOrderForEachRecursive(callback){
         //recursive
         let item = this.root;
-        function callself(item, queue = [], arr = [], root){
+        const callself = (item, queue = [], arr = [], root) => {
             if(item === null){
                 return;
             }
@@ -246,18 +246,20 @@ class Tree{
             if(item.left !== null) queue.push(item.left);
             if(item.right !== null) queue.push(item.right);
 
+
             try{
                 if(typeof(callback) !== 'function'){
                     throw new Error("Require a callback as parameter");
                 }
                 else{
-                    callback(item.data, root);
+                    callback(item.data, this.root);
                 }
             }catch(error)
             {
                 console.log(error);
                 return;
             }
+
             let next;
 
             if(queue.length > 0) next = queue[0];
@@ -268,7 +270,93 @@ class Tree{
         }
         callself(item, [], [], item);
     }
+
+
+    inOrderForEach(callback){
+        const traverseTree = (tree) =>{
+            if(tree === null) return;
+
+            //go to left side
+            traverseTree(tree.left);
+            
+            //go to root
+            try{
+                if(typeof(callback) !== 'function'){
+                    throw new Error("Require a callback as parameter");
+                }
+                else{
+                    callback(tree.data, this.root);
+                }
+            }catch(error)
+            {
+                console.log(error);
+                return;
+            }
+
+            //go to right side
+            traverseTree(tree.right);
+        }
+
+        traverseTree(this.root);
+    }
     
+
+    preOrderForEach(callback){
+        const traverseTree = (tree) =>{
+            if(tree === null) return;
+            
+            //go to root
+            try{
+                if(typeof(callback) !== 'function'){
+                    throw new Error("Require a callback as parameter");
+                }
+                else{
+                    callback(tree.data, this.root);
+                }
+            }catch(error)
+            {
+                console.log(error);
+                return;
+            }
+
+            //go to left side
+            traverseTree(tree.left);
+
+            //go to right side
+            traverseTree(tree.right);
+        }
+
+        traverseTree(this.root);
+    }
+
+    postOrderForEach(callback){
+        const traverseTree = (tree) =>{
+            if(tree === null) return;
+
+            //go to left side
+            traverseTree(tree.left);
+
+            //go to right side
+            traverseTree(tree.right);
+            
+            //go to root
+            try{
+                if(typeof(callback) !== 'function'){
+                    throw new Error("Require a callback as parameter");
+                }
+                else{
+                    callback(tree.data, this.root);
+                }
+            }catch(error)
+            {
+                console.log(error);
+                return;
+            }
+        }
+
+        traverseTree(this.root);
+    }
+
     constructor(arr){
         arr = this.#renewArr(arr); //delete duplicate item
         arr = arr.sort((a, b) => a - b); // sort arr smallest to largest
@@ -281,13 +369,13 @@ class Tree{
     }
 }
 
-let test = new Tree([2, 12, 15, 45, 66, 29]);
+let test = new Tree([13, 7, 15, 3, 8, 14, 19, 18]);
 
-// prettyPrint(test.root);
+prettyPrint(test.root);
 
-test.levelOrderForEachRecursive((item, root) => {
+test.postOrderForEach((item, tree) => {
     console.log(item);
-});
+})
 
 
 export {BstNode, Tree, prettyPrint}
