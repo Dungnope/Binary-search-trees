@@ -350,7 +350,7 @@ class Tree{
             }catch(error)
             {
                 console.log(error);
-                return;
+                return false;
             }
         }
 
@@ -369,13 +369,11 @@ class Tree{
     }
 }
 
-let test = new Tree([13, 7, 15, 3, 8, 14, 19, 18]);
+// let test = new Tree([13, 7, 15, 3, 8, 14, 19, 18]);
 
-prettyPrint(test.root);
+// prettyPrint(test.root);
 
-test.postOrderForEach((item, tree) => {
-    console.log(item);
-})
+// test.postOrderForEach(test.root);
 
 
 export {BstNode, Tree, prettyPrint}
