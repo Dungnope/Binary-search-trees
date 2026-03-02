@@ -357,7 +357,24 @@ class Tree{
         traverseTree(this.root);
     }
 
-    constructor(arr){
+    height(value){
+
+    }
+
+    //from the node of that data to the leaf
+    depth(value){
+        let curr = this.root;
+        let depth__ans = 0;
+        if(!this.includes(value)) return undefined;
+        while(curr !== null){
+            if(value < curr.data) {curr = curr.left; depth__ans++;}
+            else if(value > curr.data) {curr = curr.right; depth__ans++}
+            else break;
+        }
+        return depth__ans;
+    }
+
+    constructor(arr = []){
         arr = this.#renewArr(arr); //delete duplicate item
         arr = arr.sort((a, b) => a - b); // sort arr smallest to largest
         this.root = null;
@@ -369,11 +386,11 @@ class Tree{
     }
 }
 
-// let test = new Tree([13, 7, 15, 3, 8, 14, 19, 18]);
+let test = new Tree([13, 7, 15, 3, 8, 14, 19, 18]);
 
-// prettyPrint(test.root);
+prettyPrint(test.root);
 
-// test.postOrderForEach(test.root);
+console.log(test.depth(18));
 
 
 export {BstNode, Tree, prettyPrint}
