@@ -217,7 +217,7 @@ class Tree{
                     throw new Error("Require a callback as parameter");
                 }
                 else{
-                    callback(queue.at(0).data, this.root);
+                    callback(queue.at(0).data, queue.at(0), this.root);
                 }
             }catch(error)
             {
@@ -252,7 +252,7 @@ class Tree{
                     throw new Error("Require a callback as parameter");
                 }
                 else{
-                    callback(item.data, this.root);
+                    callback(item.data, item, this.root);
                 }
             }catch(error)
             {
@@ -285,7 +285,7 @@ class Tree{
                     throw new Error("Require a callback as parameter");
                 }
                 else{
-                    callback(tree.data, this.root);
+                    callback(tree.data, tree, this.root);
                 }
             }catch(error)
             {
@@ -311,7 +311,7 @@ class Tree{
                     throw new Error("Require a callback as parameter");
                 }
                 else{
-                    callback(tree.data, this.root);
+                    callback(tree.data, tree, this.root);
                 }
             }catch(error)
             {
@@ -345,7 +345,7 @@ class Tree{
                     throw new Error("Require a callback as parameter");
                 }
                 else{
-                    callback(tree.data, this.root);
+                    callback(tree.data, tree, this.root);
                 }
             }catch(error)
             {
@@ -358,7 +358,27 @@ class Tree{
     }
 
     height(value){
+        let rootHeight;
 
+        if(!this.includes(value)) return undefined;
+        //find the node value
+        this.levelOrderForEach((data, node) => {
+            if(data === value){
+                rootHeight = node;
+            }
+        })
+
+        //find height of node
+        const findHeight = (root) => {
+            if(root === null) return -1;
+
+            let left = findHeight(root.left);
+            let right = findHeight(root.right);
+
+            return 1 + Math.max(left, right);
+        }
+
+        return findHeight(rootHeight);
     }
 
     //from the node of that data to the leaf
@@ -386,11 +406,11 @@ class Tree{
     }
 }
 
-let test = new Tree([13, 7, 15, 3, 8, 14, 19, 18]);
+let test = new Tree([8, 3, 10, 1, 6, 4, 14, 13]);
 
 prettyPrint(test.root);
 
-console.log(test.depth(18));
+console.log(test.depth(6));
 
 
 export {BstNode, Tree, prettyPrint}
