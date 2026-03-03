@@ -330,6 +330,7 @@ class Tree{
     }
 
     postOrderForEach(callback){
+        let errorReturn = [];
         const traverseTree = (tree) =>{
             if(tree === null) return;
 
@@ -340,21 +341,23 @@ class Tree{
             traverseTree(tree.right);
             
             //go to root
-            try{
-                if(typeof(callback) !== 'function'){
-                    throw new Error("Require a callback as parameter");
-                }
-                else{
-                    callback(tree.data, tree, this.root);
-                }
-            }catch(error)
-            {
-                console.log(error);
-                return false;
-            }
+            // try{
+            //     if(typeof(callback) !== 'function'){
+            //         throw "Require a callback as parameter";
+            //     }
+            //     else{
+            //         callback(tree.data, tree, this.root);
+            //     }
+            // }catch(error)
+            // {
+            //     errorReturn.splice(0);
+            //     errorReturn.push(error, false);
+            // }
+            callback(tree.data, tree, this.root);
         }
 
         traverseTree(this.root);
+        if(!errorReturn[1]) return new Error(errorReturn[0]);
     }
 
     height(value){
@@ -394,6 +397,31 @@ class Tree{
         return depth__ans;
     }
 
+    isBalanced(){
+        let ans = true;
+
+        //check the smallest tree
+        function check_sub_balance(item, node){
+            let nodeHeight = node.height(item);
+            let rightheight, leftheight;
+            if(node.left !== null) leftheight = node.height(node.left.data);
+            else leftheight = 0;
+            if(node.right !== null) rightheight = node.height(node.right.data);
+
+            if(Math.abs(rightheight - leftheight) <= 1) return [true, nodeHeight];
+            else return [false, 2];
+        }
+
+        this.postOrderForEach((item, node) => {
+            let checkans = check_sub_balance(item, node);
+            if(ans && checkans[0]){
+                ans = true;
+            }
+            else ans = false;
+        })
+        return ans;
+    }
+
     constructor(arr = []){
         arr = this.#renewArr(arr); //delete duplicate item
         arr = arr.sort((a, b) => a - b); // sort arr smallest to largest
@@ -406,11 +434,15 @@ class Tree{
     }
 }
 
-let test = new Tree([8, 3, 10, 1, 6, 4, 14, 13]);
+let test = new Tree([1, 3, 8, 5, 6, 7]);
 
 prettyPrint(test.root);
 
-console.log(test.depth(6));
+test.insert(0.5);
+test.insert(0.4);
+test.insert(0.1);
 
+prettyPrint(test.root);
+console.log(test.isBalanced());
 
 export {BstNode, Tree, prettyPrint}
