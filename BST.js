@@ -398,28 +398,25 @@ class Tree{
     }
 
     isBalanced(){
-        let ans = true;
-
         //check the smallest tree
-        function check_sub_balance(item, node){
-            let nodeHeight = node.height(item);
+        function check_sub_balance(item, node, tree){
+            let nodeHeight = tree.height(item);
             let rightheight, leftheight;
-            if(node.left !== null) leftheight = node.height(node.left.data);
+            if(node.left !== null) leftheight = tree.height(node.left.data);
             else leftheight = 0;
-            if(node.right !== null) rightheight = node.height(node.right.data);
-
+            if(node.right !== null) rightheight = tree.height(node.right.data);
+            else rightheight = 0;
             if(Math.abs(rightheight - leftheight) <= 1) return [true, nodeHeight];
             else return [false, 2];
         }
-
+        
         this.postOrderForEach((item, node) => {
-            let checkans = check_sub_balance(item, node);
-            if(ans && checkans[0]){
-                ans = true;
+            let checkans = check_sub_balance(item, node, this);
+            if(!checkans[0]){
+                return true;
             }
-            else ans = false;
         })
-        return ans;
+        return false;
     }
 
     constructor(arr = []){
@@ -434,15 +431,15 @@ class Tree{
     }
 }
 
-let test = new Tree([1, 3, 8, 5, 6, 7]);
+// let test = new Tree([1, 3, 8, 5, 6, 7]);
 
-prettyPrint(test.root);
+// prettyPrint(test.root);
 
-test.insert(0.5);
-test.insert(0.4);
-test.insert(0.1);
+// test.insert(0.5);
+// test.insert(0.4);
+// test.insert(0.1);
 
-prettyPrint(test.root);
-console.log(test.isBalanced());
+// prettyPrint(test.root);
+// console.log(test.isBalanced());
 
-export {BstNode, Tree, prettyPrint}
+// export {BstNode, Tree, prettyPrint}
