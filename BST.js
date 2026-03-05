@@ -67,6 +67,53 @@ class Tree{
         else curr.right = new BstNode(value);
     }
 
+    //recursive delete item
+    deleteItemRecursive(value){
+        if(!this.includes(value)) return;
+
+        function findMinRight(node){
+            if(node.left === null) return node;
+            else node = findMinRight(node.left);
+            return node;
+        }
+
+        function find_and_delete(node, value){
+            if(node === null) return;
+            else if(node.data > value){
+                node.left = find_and_delete(node.left, value);
+            }
+            else if(node.data < value){
+                node.right = find_and_delete(node.right, value);
+            }
+            else{
+                //if node have 0
+                if(node.left === null && node.right === null){
+                    return null;
+                }
+                //if node have 1
+                else if(node.left === null){
+                    let temp = node;
+                    node = node.right;
+                    temp.right = null;
+                    return node;
+                }
+                else if(node.right === null){
+                    let temp = node;
+                    node = node.left;
+                    temp.left = null;
+                    return node;
+                }
+                else{
+                    let temp = findMinRight(node.right);
+                    node.data = temp.data;
+                    node.right = find_and_delete(node.right, temp.data);
+                }
+            }
+            return node;
+        }
+        find_and_delete(this.root, value);
+    }
+
     //iterative delete item
     deleteItem(value){
         if(!this.includes(value)) return;
@@ -234,42 +281,42 @@ class Tree{
 
     }
 
-    levelOrderForEachRecursive(callback){
-        //recursive
-        let item = this.root;
-        const callself = (item, queue = [], arr = [], root) => {
-            if(item === null){
-                return;
-            }
+    // levelOrderForEachRecursive(callback){
+    //     //recursive
+    //     let item = this.root;
+    //     const callself = (item, queue = [], arr = [], root) => {
+    //         if(item === null){
+    //             return;
+    //         }
 
-            arr.push(item.data);
-            if(item.left !== null) queue.push(item.left);
-            if(item.right !== null) queue.push(item.right);
+    //         arr.push(item.data);
+    //         if(item.left !== null) queue.push(item.left);
+    //         if(item.right !== null) queue.push(item.right);
 
 
-            try{
-                if(typeof(callback) !== 'function'){
-                    throw new Error("Require a callback as parameter");
-                }
-                else{
-                    callback(item.data, item, this.root);
-                }
-            }catch(error)
-            {
-                console.log(error);
-                return;
-            }
+    //         try{
+    //             if(typeof(callback) !== 'function'){
+    //                 throw new Error("Require a callback as parameter");
+    //             }
+    //             else{
+    //                 callback(item.data, item, this.root);
+    //             }
+    //         }catch(error)
+    //         {
+    //             console.log(error);
+    //             return;
+    //         }
 
-            let next;
+    //         let next;
 
-            if(queue.length > 0) next = queue[0];
-            else next = null;
+    //         if(queue.length > 0) next = queue[0];
+    //         else next = null;
 
-            queue.shift();
-            callself(next, queue, arr, root);
-        }
-        callself(item, [], [], item);
-    }
+    //         queue.shift();
+    //         callself(next, queue, arr, root);
+    //     }
+    //     callself(item, [], [], item);
+    // }
 
 
     inOrderForEach(callback){
@@ -341,18 +388,18 @@ class Tree{
             traverseTree(tree.right);
             
             //go to root
-            // try{
-            //     if(typeof(callback) !== 'function'){
-            //         throw "Require a callback as parameter";
-            //     }
-            //     else{
-            //         callback(tree.data, tree, this.root);
-            //     }
-            // }catch(error)
-            // {
-            //     errorReturn.splice(0);
-            //     errorReturn.push(error, false);
-            // }
+            try{
+                if(typeof(callback) !== 'function'){
+                    throw "Require a callback as parameter";
+                }
+                else{
+                    callback(tree.data, tree, this.root);
+                }
+            }catch(error)
+            {
+                console.log(error);
+                return;
+            }
             callback(tree.data, tree, this.root);
         }
 
@@ -419,6 +466,8 @@ class Tree{
         return false;
     }
 
+
+
     constructor(arr = []){
         arr = this.#renewArr(arr); //delete duplicate item
         arr = arr.sort((a, b) => a - b); // sort arr smallest to largest
@@ -431,15 +480,19 @@ class Tree{
     }
 }
 
-// let test = new Tree([1, 3, 8, 5, 6, 7]);
+let test = new Tree([1, 3, 8, 5, 6, 7]);
 
-// prettyPrint(test.root);
+test.insert(0.5);
+test.insert(0.4);
+test.insert(0.1);
 
-// test.insert(0.5);
-// test.insert(0.4);
-// test.insert(0.1);
+prettyPrint(test.root);
+console.log("\n");
 
-// prettyPrint(test.root);
-// console.log(test.isBalanced());
+test.deleteItemRecursive(5);
+test.deleteItemRecursive(0.5);
+test.deleteItemRecursive(1);
 
-// export {BstNode, Tree, prettyPrint}
+prettyPrint(test.root);
+
+export {BstNode, Tree, prettyPrint}
