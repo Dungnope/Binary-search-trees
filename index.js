@@ -142,7 +142,7 @@ import {prettyPrint, Tree, getRandomInt} from './BST.js';
 // // Nhánh trái của 80 nối thẳng về 20. Nhánh phải của 80 vẫn giữ nguyên là 90.
 
 
-//The Odin Project test cases
+//The Odin Project test cases temporary
 let testTree = getRandomInt(0, 99, 12);
 
 let test = new Tree(testTree);
