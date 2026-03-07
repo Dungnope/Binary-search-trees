@@ -400,7 +400,6 @@ class Tree{
                 console.log(error);
                 return;
             }
-            callback(tree.data, tree, this.root);
         }
 
         traverseTree(this.root);
@@ -446,26 +445,35 @@ class Tree{
 
     isBalanced(){
         //check the smallest tree
+        let ans = true;
         function check_sub_balance(item, node, tree){
             let nodeHeight = tree.height(item);
-            let rightheight, leftheight;
-            if(node.left !== null) leftheight = tree.height(node.left.data);
-            else leftheight = 0;
-            if(node.right !== null) rightheight = tree.height(node.right.data);
-            else rightheight = 0;
-            if(Math.abs(rightheight - leftheight) <= 1) return [true, nodeHeight];
+            let rightHeight, leftHeight;
+            if(node.left !== null) {leftHeight = tree.height(node.left.data);}
+            else {leftHeight = 0;}
+            if(node.right !== null) {rightHeight = tree.height(node.right.data);}
+            else {rightHeight = 0;}
+            if(Math.abs(rightHeight - leftHeight) <= 1) return [true, nodeHeight];
             else return [false, 2];
         }
         
         this.postOrderForEach((item, node) => {
             let checkans = check_sub_balance(item, node, this);
             if(!checkans[0]){
-                return true;
+                ans =  false;
             }
         })
-        return false;
+        return ans;
     }
 
+    rebalance(){
+        let reArrange = [];
+        this.postOrderForEach((item) => {
+            reArrange.push(item);
+        })
+        reArrange = reArrange.sort((a, b) => a - b);
+        this.root = this.#buildTree(reArrange);
+    }
 
 
     constructor(arr = []){
@@ -480,19 +488,14 @@ class Tree{
     }
 }
 
-let test = new Tree([1, 3, 8, 5, 6, 7]);
+function getRandomInt(min, max, n, arr = []) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    for(let i = 0; i < n; i++){
+        arr.push(Math.floor(Math.random() * (max - min + 1)) + min);
+    }
+    return arr;
+}
 
-test.insert(0.5);
-test.insert(0.4);
-test.insert(0.1);
 
-prettyPrint(test.root);
-console.log("\n");
-
-test.deleteItemRecursive(5);
-test.deleteItemRecursive(0.5);
-test.deleteItemRecursive(1);
-
-prettyPrint(test.root);
-
-export {BstNode, Tree, prettyPrint}
+export {BstNode, Tree, prettyPrint, getRandomInt}
